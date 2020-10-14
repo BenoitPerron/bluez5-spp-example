@@ -126,14 +126,15 @@ server_read_data (gpointer user_data) {
 	int opts = 0;
 	struct spp_data *spp = user_data;
 	
-	printf("server_read_data called\n");
+//	printf("server_read_data called\n");
 
 	// set socket for blocking IO
 	fcntl(spp->sock_fd, F_SETFL, opts);
 	opts = fcntl(spp->sock_fd, F_GETFL);
 	if (opts < 0) {
-		perror("fcntl(F_GETFL)");
-		exit(EXIT_FAILURE);
+//zz		perror("fcntl(F_GETFL)");
+		return true;
+//zz		exit(EXIT_FAILURE);
 	}
 
 	opts &= ~O_NONBLOCK;
@@ -146,19 +147,23 @@ server_read_data (gpointer user_data) {
 	// read data from the client
 	bytes_read = read(spp->sock_fd, buf, sizeof(buf));
 	if ( bytes_read > 0 ) {
-		printf("received [%s]\n", buf);
+//zz		printf("received [%s]\n", buf);
+		printf("> %s", buf);
 	} else {
 		printf("error reading from client [%d] %s\n", errno, strerror(errno));
 	}
 
 	// close connection
-	close(spp->sock_fd);
+//zz	close(spp->sock_fd);
 
+	return true;
+#if 0	
 	// all done!
 	g_main_loop_quit(spp->loop);
 
 	// make this a one-shot
 	return false;
+#endif 
 }
 
 gboolean
